@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="zh-Hant" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${doctor.name} + ' - MiniClinic'">醫師詳細</title>
+    <style>
+        body { font-family: "Microsoft JhengHei", sans-serif; max-width: 720px; margin: 40px auto; padding: 0 20px; }
+        h1 { color: #0F2443; }
+        .card { background: #F8FAFC; padding: 24px; border-left: 5px solid #14B8A6; border-radius: 4px; }
+        dt { font-weight: bold; color: #0F2443; margin-top: 12px; }
+        dd { margin-left: 0; margin-bottom: 8px; }
+        .back { display: inline-block; margin-top: 20px; color: #14B8A6; }
+    </style>
+</head>
+<body>
+    <h1 th:text="${doctor.name}">醫師姓名</h1>
+    <div class="card">
+        <dl>
+            <dt>醫師編號</dt><dd th:text="${doctor.doctorId}">D001</dd>
+            <dt>科別</dt>    <dd th:text="${doctor.department}">家醫科</dd>
+            <dt>專長</dt>    <dd th:text="${doctor.specialty}">一般內科</dd>
+        </dl>
+    </div>
+    <a th:href="@{/doctors}" class="back">← 返回清單</a>
+</body>
+</html>

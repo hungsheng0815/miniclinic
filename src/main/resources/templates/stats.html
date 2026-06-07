@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="zh-Hant" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>掛號統計 - MiniClinic</title>
+    <style>
+        body { font-family: "Microsoft JhengHei", sans-serif; max-width: 960px; margin: 40px auto; padding: 0 20px; background-color: #F8FAFC; }
+        h1 { color: #0F2443; border-bottom: 3px solid #14B8A6; padding-bottom: 8px; }
+        
+        /* 數據卡片區塊 */
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 40px; }
+        .stat-card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); text-align: center; border-top: 4px solid #14B8A6; }
+        .stat-card h3 { color: #64748B; font-size: 14px; margin-bottom: 8px; text-transform: uppercase; }
+        .stat-card .value { color: #0F2443; font-size: 32px; font-weight: bold; }
+
+        /* 表格區塊 */
+        .table-container { background: white; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); overflow: hidden; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 16px; text-align: left; border-bottom: 1px solid #E2E8F0; }
+        th { background: #0F2443; color: white; font-weight: 500; }
+        tr:last-child td { border-bottom: none; }
+        
+        /* 視覺化進度條 */
+        .bar-container { display: flex; align-items: center; gap: 10px; }
+        .bar-bg { background: #E2E8F0; border-radius: 4px; flex-grow: 1; height: 8px; position: relative; }
+        .bar-fill { background: #14B8A6; height: 100%; border-radius: 4px; transition: width 0.5s ease; }
+        
+        .btn-back { display: inline-block; margin-top: 24px; color: #64748B; text-decoration: none; font-size: 14px; }
+        .btn-back:hover { color: #0F2443; }
+    </style>
+</head>
+<body>
+    <h1>診所營運統計</h1>
+
+    <!-- 總覽卡片 -->
+    <div class="stats-grid">
+        <div class="stat-card">
+            <h3>醫師總數</h3>
+            <div class="value" th:text="${doctorCount}">0</div>
+        </div>
+        <div class="stat-card">
+            <h3>掛號病患</h3>
+            <div class="value" th:text="${patientCount}">0</div>
+        </div>
+        <div class="stat-card">
+            <h3>累計掛號次數</h3>
+            <div class="value" th:text="${appointmentCount}">0</div>
+        </div>
+    </div>
+
+    <!-- 科別掛號分佈 -->
+    <h2>各科別預約分佈</h2>
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th style="width: 30%;">科別名稱</th>
+                    <th style="width: 20%;">掛號次數</th>
+                    <th>佔比視覺化</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="stat : ${deptStats}">
+                    <td th:text="${stat[0]}" style="font-weight: bold; color: #0F2443;">科別</td>
+                    <td th:text="${stat[1]}">0</td>
+                    <td>
+                        <div class="bar-container">
+                            <div class="bar-bg">
+                                <!-- 簡單計算百分比，若總數為 0 則設為 0 -->
+                                <div class="bar-fill" 
+                                     th:with="percent=${appointmentCount > 0 ? (stat[1] * 100.0 / appointmentCount) : 0}"
+                                     th:style="|width: ${percent}%;|"></div>
+                            </div>
+                            <span style="font-size: 12px; color: #94A3B8;" 
+                                  th:with="percent=${appointmentCount > 0 ? (stat[1] * 100.0 / appointmentCount) : 0}"
+                                  th:text="${#numbers.formatDecimal(percent, 1, 1) + '%'}">0%</span>
+                        </div>
+                    </td>
+                </tr>
+                <tr th:if="${deptStats.isEmpty()}">
+                    <td colspan="3" style="text-align: center; color: #94A3B8; padding: 40px;">目前尚無掛號數據</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <a th:href="@{/}" class="btn-back">← 返回首頁</a>
+</body>
+</html>

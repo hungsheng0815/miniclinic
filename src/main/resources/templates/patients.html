@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="zh-Hant" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>病歷資料 - MiniClinic</title>
+    <style>
+        body { font-family: "Microsoft JhengHei", sans-serif; max-width: 960px; margin: 40px auto; padding: 0 20px; }
+        h1 { color: #0F2443; border-bottom: 3px solid #14B8A6; padding-bottom: 8px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 16px; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #E2E8F0; }
+        th { background: #0F2443; color: white; }
+        tr:hover { background: #F8FAFC; }
+        .back { display: inline-block; margin-top: 20px; color: #14B8A6; text-decoration: none; }
+    </style>
+</head>
+<body>
+    <h1>病歷資料清單</h1>
+
+    <table>
+        <thead>
+            <tr>
+                <th>病歷號</th>
+                <th>姓名</th>
+                <th>性別</th>
+                <th>聯絡電話</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="patient : ${patients}">
+                <td th:text="${patient.chartNo}">P001</td>
+                <td th:text="${patient.name}">姓名</td>
+                <td th:text="${patient.gender}">性別</td>
+                <td th:text="${patient.phone}">09xx-xxx-xxx</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a th:href="@{/}" class="back">← 回首頁</a>
+</body>
+</html>

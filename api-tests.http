@@ -1,0 +1,99 @@
+### Health API
+GET http://localhost:8080/api/health
+Accept: application/json
+
+###
+
+### About API
+GET http://localhost:8080/api/about
+Accept: application/json
+
+###
+
+### Doctors API - list all
+GET http://localhost:8080/api/doctors
+Accept: application/json
+
+###
+
+### Doctors API - filter by department
+GET http://localhost:8080/api/doctors?department=Internal%20Medicine
+Accept: application/json
+
+###
+
+### Doctors API - get one
+GET http://localhost:8080/api/doctors/D001
+Accept: application/json
+
+###
+
+### Doctors API - not found
+GET http://localhost:8080/api/doctors/D999
+Accept: application/json
+
+###
+
+### Departments API
+GET http://localhost:8080/api/departments
+Accept: application/json
+
+###
+
+### Doctors API - create
+POST http://localhost:8080/api/doctors
+Content-Type: application/json
+
+{
+  "doctorId": "D006",
+  "name": "Test Doctor",
+  "department": "Internal Medicine",
+  "specialty": "General Medicine"
+}
+
+###
+
+### Doctors API - update
+PUT http://localhost:8080/api/doctors/D006
+Content-Type: application/json
+
+{
+  "name": "Test Doctor",
+  "department": "Internal Medicine",
+  "specialty": "General Medicine and Health Check"
+}
+
+###
+
+### Doctors API - delete
+DELETE http://localhost:8080/api/doctors/D006
+
+###
+
+### Stats page
+GET http://localhost:8080/stats
+Accept: text/html
+
+###
+
+### Appointments API - count
+GET http://localhost:8080/api/appointments/count
+Accept: application/json
+
+###
+
+### Appointments API - no query params
+GET http://localhost:8080/api/appointments
+Accept: application/json
+
+###
+
+### Appointments API - filter by date
+GET http://localhost:8080/api/appointments?date=2026-05-01
+Accept: application/json
+
+###
+
+### Appointments API - filter by doctor id
+GET http://localhost:8080/api/appointments?doctorId=D001
+Accept: application/json

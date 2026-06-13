@@ -14,6 +14,8 @@
         th { background: #0F2443; color: white; }
         .btn-cancel { background: #EF4444; color: white; border: none; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 12px; }
         .btn-cancel:hover { background: #DC2626; }
+        .btn-complete { background: #10B981; color: white; border: none; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 12px; margin-left: 4px; }
+        .btn-complete:hover { background: #059669; }
         .status-BOOKED    { color: #F59E0B; font-weight: bold; }
         .status-COMPLETED { color: #10B981; font-weight: bold; }
         .status-CANCELLED { color: #94A3B8; }
@@ -58,6 +60,9 @@
                     <button th:if="${appt.status == 'BOOKED'}" 
                             class="btn-cancel"
                             th:onclick="|cancelAppointment(${appt.apptId})|">取消掛號</button>
+                    <button th:if="${appt.status == 'BOOKED'}" 
+                            class="btn-complete"
+                            th:onclick="|completeAppointment(${appt.apptId})|">看診完成</button>
                 </td>
             </tr>
         </tbody>
@@ -76,6 +81,22 @@
                 }).then(res => {
                     if (res.ok) location.reload();
                     else alert('取消失敗，請稍後再試。');
+                });
+            }
+        }
+
+        function completeAppointment(id) {
+            if (confirm('確定要將此筆掛號標記為「看診完成」嗎？')) {
+                fetch(`/api/appointments/${id}/status`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ status: 'COMPLETED' })
+                }).then(res => {
+                    if (res.ok) {
+                        location.reload();
+                    } else {
+                        alert('更新失敗，請稍後再試。');
+                    }
                 });
             }
         }

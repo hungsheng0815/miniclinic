@@ -10,9 +10,13 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import jakarta.validation.Valid;
 import tw.edu.fju.miniclinic.model.Appointment;
@@ -136,5 +140,46 @@ public ResponseEntity<Appointment> createAppointment(
 
 	Appointment saved = appointmentRepo.save(appt);
 	return ResponseEntity.status(201).body(saved);
-   }    
+   }
+
+    // 修正：增加支援 "/api/appointments/{id}/status" 路径，以匹配前端 fetch 的網址
+    @RequestMapping(value = {"/api/appointments/{id}", "/api/appointment/{id}", "/api/appointments/{id}/status"}, 
+                    method = {RequestMethod.DELETE, RequestMethod.POST, RequestMethod.GET, RequestMethod.PUT, RequestMethod.PATCH})
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> deleteAppointment(@PathVariable String id) {
+        System.out.println("==== 收到取消掛號請求 ====");
+        System.out.println("請求的 ID 字串為: " + id);
+
+        if ("undefined".equals(id) || "null".equals(id)) {
+            return ResponseEntity.badRequest().body(Map.of("success", false, "message", "ID 是無效的 undefined"));
+        }
+
+        try {
+            Long longId = Long.parseLong(id);
+            if (!appointmentRepo.existsById(longId)) {
+                System.out.println("刪除失敗：資料庫找不到 ID " + longId);
+                return ResponseEntity.status(404).body(Map.of("success", false, "message", "找不到掛號紀錄: " + longId));
+            }
+            appointmentRepo.deleteById(longId);
+            System.out.println("成功刪除掛號，ID: " + longId);
+            return ResponseEntity.ok(Map.of("success", true));
+        } catch (Exception e) {
+            System.out.println("刪除過程出錯: " + e.getMessage());
+            return ResponseEntity.status(500).body(Map.of("success", false, "message", "伺服器錯誤: " + e.getMessage()));
+        }
+    }
+
+    // 網頁表單直接跳轉用 (處理 HTML <form> 提交)
+    @PostMapping("/appointments/cancel/{id}")
+    public String cancelAppointmentPage(@PathVariable Long id) {
+        try {
+            if (appointmentRepo.existsById(id)) {
+                appointmentRepo.deleteById(id);
+            }
+        } catch (Exception e) {
+            // 這裡可以記錄日誌
+        }
+        // 刪除後跳轉回儀表板，重新讀取清單
+        return "redirect:/dashboard";
+    }
 }

@@ -16,4 +16,7 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
     // 返回的 List<Object[]> 中，每個 Object[] 包含 (String departmentName, Long count)
     @Query("SELECT a.doctor.department, COUNT(a) FROM Appointment a GROUP BY a.doctor.department")
     List<Object[]> countAppointmentsByDepartment();
+
+    @Query("SELECT a.status, COUNT(a) FROM Appointment a GROUP BY a.status")
+    List<Object[]> countAppointmentsByStatus();
 }
